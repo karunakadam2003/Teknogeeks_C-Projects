@@ -1,0 +1,479 @@
+This beginner C project is helpful for small-scale and large-scale industries. Admin can add all details about the employee and can update and delete it. File handling is used to store the data of employees.
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+// Structure of the employee
+struct employee {
+	char empName[50];
+	float salary;
+	int age;
+	int id;
+};
+struct employee e;
+
+// size of the structure
+long int size = sizeof(e);
+
+
+FILE *fp, *ft;
+
+void add()
+{
+
+	fseek(fp, 0, SEEK_END);
+
+		printf("\nEnter Name : ");
+		scanf("%s", e.empName);
+
+		printf("\nEnter Age : ");
+		scanf("%d", &e.age);
+
+		printf("\nEnter Salary : ");
+		scanf("%f", &e.salary);
+
+		printf("\nEnter EMP-ID : ");
+		scanf("%d", &e.id);
+
+		fwrite(&e, size, 1, fp);
+
+	
+	
+}
+
+// Function to delete the records
+void delete()
+{
+	
+	char empname[50];
+	char another = 'y';
+
+
+		printf("\nEnter employee name to delete : ");
+		scanf("%s", empname);
+
+		ft = fopen("temp.txt", "wb");
+		rewind(fp);
+
+		while (fread(&e, size,1, fp) == 1) {
+			if (strcmp(e.empName,empname)!= 0)
+			fwrite(&e, size, 1, ft);
+		}
+
+		fclose(fp);
+		fclose(ft);
+		remove("data.txt");
+		rename("temp.txt", "data.txt");
+		fp = fopen("data.txt", "rb+");
+
+	
+	
+}
+
+// Function to display the record
+void display()
+{
+
+
+	// sets pointer to start
+	// of the file
+	rewind(fp);
+
+	printf("\n==========================================================");
+    printf("\nNAME\t\tAGE\t\tSALARY\t\tID\n");
+    printf("==========================================================\n");
+	while (fread(&e, size, 1, fp) == 1)
+		printf("\n%s\t\t%d\t\t%.2f\t%d",e.empName, e.age, e.salary, e.id);
+
+	printf("\n\n\n\t");
+
+}
+
+// Function to modify the record
+void update()
+{
+
+	char empname[50];
+	char another = 'y';
+
+
+		printf("\nEnter employee name to update : ");
+		scanf("%s", empname);
+
+		rewind(fp);
+
+		// While File is open
+		while (fread(&e, size, 1, fp) == 1) {
+			// Compare the employee name
+			// with ename
+			if (strcmp(e.empName, empname) == 0) {
+				printf("\nEnter new name:");
+				scanf("%s", e.empName);
+				printf("\nEnter new age :");
+				scanf("%d", &e.age);
+				printf("\nEnter new salary :");
+				scanf("%f", &e.salary);
+				printf("\nEnter new EMP-ID :");
+				scanf("%d", &e.id);
+
+				fseek(fp, -size, SEEK_CUR);
+				fwrite(&e, size, 1, fp);
+				break;
+			
+		}
+
+	
+	}
+}
+
+// Driver code
+int main()
+{
+	int choice;
+
+	// opening the file
+	fp = fopen("data.txt", "rb+");
+
+	// showing error if file is
+	// unable to open.
+	if (fp == NULL) {
+		fp = fopen("data.txt", "wb+");
+		if (fp == NULL) {
+			printf("\nCannot open file...");
+			exit(1);
+		}
+	}
+
+
+
+
+	printf("\n\t=============================================================");
+	printf("\n\t ~~~~~~~~~~~~~~EMPLOYEE MANAGEMENT SYSTEM ~~~~~~~~~~~~~~~~~");
+	printf("\n\t=============================================================\n");
+	
+	while (1) {
+		// Clearing console and asking the
+		// user for input
+	
+	
+		printf("\n1. ADD RECORD\n");
+	
+		printf("\n2. DELETE RECORD\n");
+	
+		printf("\n3. DISPLAY RECORDS\n");
+	
+		printf("\n4. UPDATE RECORD\n");
+	
+		printf("\n5. EXIT\n");
+	
+		printf("\nENTER YOUR CHOICE...\n");
+		fflush(stdin);
+		scanf("%d", &choice);
+
+		// Switch Case
+		switch (choice) {
+		case 1:
+
+			// Add the records
+			add();
+			break;
+
+		case 2:
+
+			// Delete the records
+			delete();
+			break;
+
+		case 3:
+
+			// Display the records
+			display();
+			break;
+
+		case 4:
+
+			// update the records
+	    	update();
+			break;
+
+		case 5:
+			fclose(fp);
+			exit(0);
+			break;
+
+		default:
+			printf("\nINVALID CHOICE...\n");
+		}
+	}
+
+	return 0;
+}
+
+
+
+
+
+
+
+Output:
+	
+	=============================================================
+	 ~~~~~~~~~~~~~~EMPLOYEE MANAGEMENT SYSTEM ~~~~~~~~~~~~~~~~~
+	=============================================================
+
+1. ADD RECORD
+
+2. DELETE RECORD
+
+3. DISPLAY RECORDS
+
+4. UPDATE RECORD
+
+5. EXIT
+
+ENTER YOUR CHOICE...
+1
+
+Enter Name : Karuna
+
+Enter Age : 18
+
+Enter Salary : 50000
+
+Enter EMP-ID : 2921
+
+1. ADD RECORD
+
+2. DELETE RECORD
+
+3. DISPLAY RECORDS
+
+4. UPDATE RECORD
+
+5. EXIT
+
+ENTER YOUR CHOICE...
+3
+
+==========================================================
+NAME		AGE		SALARY		ID
+==========================================================
+
+Karuna		18		50000.00	2921
+
+
+	
+1. ADD RECORD
+
+2. DELETE RECORD
+
+3. DISPLAY RECORDS
+
+4. UPDATE RECORD
+
+5. EXIT
+
+ENTER YOUR CHOICE...
+1
+
+Enter Name : Monali
+
+Enter Age : 19
+
+Enter Salary : 45000
+
+Enter EMP-ID : 2930
+
+1. ADD RECORD
+
+2. DELETE RECORD
+
+3. DISPLAY RECORDS
+
+4. UPDATE RECORD
+
+5. EXIT
+
+ENTER YOUR CHOICE...
+3
+
+==========================================================
+NAME		AGE		SALARY		ID
+==========================================================
+
+Karuna		18		50000.00	2921
+Monali		19		45000.00	2930
+
+
+	
+1. ADD RECORD
+
+2. DELETE RECORD
+
+3. DISPLAY RECORDS
+
+4. UPDATE RECORD
+
+5. EXIT
+
+ENTER YOUR CHOICE...
+2
+
+Enter employee name to delete : Karuna
+
+1. ADD RECORD
+
+2. DELETE RECORD
+
+3. DISPLAY RECORDS
+
+4. UPDATE RECORD
+
+5. EXIT
+
+ENTER YOUR CHOICE...
+3
+
+==========================================================
+NAME		AGE		SALARY		ID
+==========================================================
+
+Monali		19		45000.00	2930
+
+
+	
+1. ADD RECORD
+
+2. DELETE RECORD
+
+3. DISPLAY RECORDS
+
+4. UPDATE RECORD
+
+5. EXIT
+
+ENTER YOUR CHOICE...
+4
+
+Enter employee name to update : Monali
+
+Enter new name:Pranita
+
+Enter new age :1 20
+
+Enter new salary :60000
+
+Enter new EMP-ID :2930
+
+1. ADD RECORD
+
+2. DELETE RECORD
+
+3. DISPLAY RECORDS
+
+4. UPDATE RECORD
+
+5. EXIT
+
+ENTER YOUR CHOICE...
+3
+
+==========================================================
+NAME		AGE		SALARY		ID
+==========================================================
+
+Pranita		20		60000.00	2930
+
+
+	
+1. ADD RECORD
+
+2. DELETE RECORD
+
+3. DISPLAY RECORDS
+
+4. UPDATE RECORD
+
+5. EXIT
+
+ENTER YOUR CHOICE...
+1
+
+Enter Name : Atharva
+
+Enter Age : 23
+
+Enter Salary : 60000
+
+Enter EMP-ID : 2960
+
+1. ADD RECORD
+
+2. DELETE RECORD
+
+3. DISPLAY RECORDS
+
+4. UPDATE RECORD
+
+5. EXIT
+
+ENTER YOUR CHOICE...
+1
+
+Enter Name : Aniket
+
+Enter Age : 20
+
+Enter Salary : 45000
+
+Enter EMP-ID : 294329 
+
+1. ADD RECORD
+
+2. DELETE RECORD
+
+3. DISPLAY RECORDS
+
+4. UPDATE RECORD
+
+5. EXIT
+
+ENTER YOUR CHOICE...
+3
+
+==========================================================
+NAME		AGE		SALARY		ID
+==========================================================
+
+Pranita		20		60000.00	2930
+Atharva		23		60000.00	2960
+Aniket		20		45000.00	2943
+
+
+	
+1. ADD RECORD
+
+2. DELETE RECORD
+
+3. DISPLAY RECORDS
+
+4. UPDATE RECORD
+
+5. EXIT
+
+ENTER YOUR CHOICE...
+5
+
+
+
+
+
+
+
+
+
+
+
